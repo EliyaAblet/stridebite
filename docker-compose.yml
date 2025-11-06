@@ -1,1 +1,17 @@
+services:
+  web:
+    build: .
+    command: sh -c "python manage.py migrate && python manage.py runserver 0.0.0.0:8000"
+    ports:
+      - "8000:8000"
+    volumes:
+      - .:/app
+      - media:/app/media
+    environment:
+      - DJANGO_DEBUG=1
+      - DJANGO_SECRET_KEY=changeme-in-env
+      - DATABASE_URL=sqlite:///db.sqlite3
+
+volumes:
+  media:
 services: {}
