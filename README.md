@@ -1,0 +1,1 @@
+# StrideBite — Project Scaffold
