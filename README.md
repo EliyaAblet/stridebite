@@ -115,7 +115,8 @@ In accordance with the course AI policy, I am providing the following descriptio
 ### 1. Tools and Usage Summary
 
 Documentation and planning:  
-I used AI to help reorganize and clean up some of the user stories, the project summary.
+I used AI to help reorganize and clean up some of the user stories, the project summary, and a few
+sections of the README so they were easier to read.
 
 Design assistance:  
 AI was used to help format Mermaid diagrams for the UI mockups and architecture. The diagrams are
