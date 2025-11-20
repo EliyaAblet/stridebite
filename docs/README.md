@@ -1,55 +1,61 @@
-# StrideBite — User Stories, Mis-User Stories, Mockups, and Architecture
+# StrideBite – User Stories, Mis-User Stories, Mockups, and Architecture
+
+This document outlines the planned behavior of the StrideBite fitness tracking app.  
+It includes user stories, acceptance criteria, mis-user scenarios, mockups, and system diagrams.  
+The purpose is to show how the app is expected to work from both normal and adversarial perspectives.
+
+---
 
 ## User Stories (with Acceptance Criteria)
 
-1. As a **trainee**, I want to **log a workout (run/strength/treadmill)** so I can **track training volume over time**.  
-   **Acceptance:** From the dashboard I can add a workout with type, duration, and distance/sets-reps; it appears in Today Summary and the list.
+1. As a trainee, I want to log a workout (run, strength, or treadmill) so I can track my training volume over time.  
+   Acceptance: From the dashboard, I can add a workout with type, duration, and distance/sets/reps. It appears in the daily summary and the list.
 
-2. As a **trainee**, I want to **record a meal with protein and calories** so I can **hit my daily protein goal**.  
-   **Acceptance:** I can add food entries with protein (g) and calories; daily totals and a 7-day chart render.
+2. As a trainee, I want to record a meal with protein and calories so I can meet my daily nutrition goals.  
+   Acceptance: I can add food entries with protein and calories. Totals for the day update and a 7-day chart reflects trends.
 
-3. As a **trainee**, I want to **log my weight** so I can **see body-weight trends**.  
-   **Acceptance:** I can enter weight for any date; a line chart shows a 7-day rolling average.
+3. As a trainee, I want to log my weight so I can monitor my body-weight changes over time.  
+   Acceptance: I can enter a weight for any date, and a weekly rolling line chart shows progress.
 
-4. As a **trainee**, I want to **upload a progress photo** so I can **visually compare changes**.  
-   **Acceptance:** I can upload an image; a thumbnail appears on the day view; file stored privately.
+4. As a trainee, I want to upload a progress photo so I can visually compare changes.  
+   Acceptance: I can upload an image that becomes a thumbnail on the daily view. Files are stored privately.
 
-5. As a **trainee**, I want to **log sleep hours** so I can **correlate sleep with workout quality**.  
-   **Acceptance:** I can input hours slept per date; a weekly bar chart renders.
+5. As a trainee, I want to log sleep hours so I can see how sleep affects my training quality.  
+   Acceptance: I can enter hours slept per day, and a weekly bar chart appears on the dashboard.
 
-6. As a **user**, I want to **export my data** so I can **own/back up my logs**.  
-   **Acceptance:** I can export CSV/JSON within a selected date range; file downloads.
+6. As a user, I want to export my data so I can save or back up my logs.  
+   Acceptance: I can download CSV or JSON files within a chosen date range.
 
-7. As a **user**, I want to **sign in securely** so I can **protect my data**.  
-   **Acceptance:** Email/password auth; password reset; logout; session expiry.
+7. As a user, I want to sign in securely so I can protect my account data.  
+   Acceptance: The system requires email/password, password reset, and session expiration.
 
-8. As a **user**, I want a **Today Summary** so I can **see protein, calories, workout, weight, and sleep at a glance**.  
-   **Acceptance:** Dashboard shows today’s totals and last-7-day mini-charts.
-
----
-
-## Mis-User Stories & Mitigation Criteria
-
-1. As a **malicious actor**, I want to **brute-force logins** so I can **access private data**.  
-   **Mitigation:** Rate-limit auth; lockout/backoff; password complexity; HTTPS only; CSRF protection.
-
-2. As a **malicious actor**, I want to **upload a poisoned image** so I can **exploit file parsing**.  
-   **Mitigation:** Validate MIME/extension; size limits; randomized filenames; store outside static root.
-
-3. As a **malicious actor**, I want to **enumerate users** to **target accounts**.  
-   **Mitigation:** Uniform login errors; no user-enumeration behavior.
-
-4. As a **malicious actor**, I want to **inject script into fields** so I can **steal sessions**.  
-   **Mitigation:** Auto-escape templates; sanitize user input; CSP headers.
-
-5. As a **malicious actor**, I want to **export another user's data**.  
-   **Mitigation:** Strict per-user access rules; rate limiting; session verification.
+8. As a user, I want a clear daily summary so I can quickly see protein, calories, workout info, weight, and sleep at a glance.  
+   Acceptance: The dashboard shows today’s totals and small charts for the last seven days.
 
 ---
 
-## Low-Fidelity UI Mockups (Mermaid)
+## Mis-User Stories and Mitigation
 
-### Dashboard (Today Summary)
+1. As a malicious actor, I want to perform brute-force logins so I can access private data.  
+   Mitigation: Rate limiting, account lockout, strong password rules, HTTPS, and CSRF protection.
+
+2. As a malicious actor, I want to upload a poisoned image file so I can attempt code execution.  
+   Mitigation: Validate MIME types, restrict file extensions, limit size, and store files outside the static root.
+
+3. As a malicious actor, I want to scrape user data through automated requests.  
+   Mitigation: API throttling, required authentication, and session rotation.
+
+4. As a malicious actor, I want to inject SQL into form fields so I can access unauthorized records.  
+   Mitigation: Use Django ORM parameterization and built-in validation.
+
+5. As a malicious actor, I want to tamper with requests so I can impersonate other users.  
+   Mitigation: Use session middleware, authentication checks, and server-side permission controls.
+
+---
+
+## Visual Mockups (Text-Based Approximation)
+
+### Dashboard Layout (Concept)
 
 ```mermaid
 flowchart TD
