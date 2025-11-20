@@ -65,7 +65,7 @@ Your app will run at: http://localhost:8000
 ### 1. Dashboard Mockup
 ```mermaid
 flowchart TD
-A[Navbar Home · Log · Export · Profile] --> B[Today Summary: Protein · Calories · Workout · Weight · Sleep]
+A[Navbar<br/>Home · Log · Export · Profile] --> B[Today Summary<br/>Protein · Calories · Workout · Weight · Sleep]
 B --> C[Quick Add Forms]
 B --> D[7-Day Mini Charts]
 C --> E[Recent Entries List]
@@ -100,26 +100,43 @@ E --> F[Save Workout]
 ```mermaid
 flowchart LR
 User --> Browser
-Browser --> WebApp[Django App (Views + REST API)]
+Browser --> WebApp[Django App<br/>Views + REST API]
 WebApp --> DB[(Postgres/SQLite)]
 WebApp --> Media[(Local Media Storage)]
 WebApp --> Services[Business Logic]
 Services --> Models[Django Models]
 ```
 
----
+## 5. AI Use Disclosure
 
-## AI Use Disclosure
+In accordance with the course AI policy, I am providing the following description of how AI tools
+(ChatGPT) were used during the completion of this milestone.
 
 ### 1. Tools and Usage Summary
-- Documentation support: I used ChatGPT to organize text and check grammar.
-- Diagram formatting: Mermaid diagrams were generated following my layout instructions.
-- Debugging assistance: AI was used to analyze error messages, but all implementation logic is my own.
+
+Documentation and planning:  
+I used AI to help reorganize and clean up some of the user stories, the project summary, and a few
+sections of the README so they were easier to read.
+
+Design assistance:  
+AI was used to help format Mermaid diagrams for the UI mockups and architecture. The diagrams are
+based on my descriptions and layout instructions, but the tool helped format the syntax correctly.
+
+Development assistance:  
+I wrote the code for the project myself, including models, views, URLs, templates, and configuration.
+AI was used as a debugging helper when errors came up, such as migration issues or Django import
+problems. I provided the error messages, and AI explained how to fix them.
 
 ### 2. Nature of Prompts
-- Documentation prompts: “Help refine this summary,” “Convert this list into clearer markdown.”
-- Diagram prompts: “Format this workflow diagram in Mermaid syntax.”
-- Debugging prompts: “Why is this Django error occurring?” “Explain why this variable is returning null.”
+
+Examples of the types of prompts I used:
+
+- Help me rewrite this project summary in clearer wording.
+- Convert this description into a Mermaid diagram.
+- Why is this Django view or URL causing an error?
+- Explain this migration error and how to resolve it.
 
 ### 3. Ownership Statement
-While AI helped with formatting, diagram layout, and debugging guidance, the project's code, structure, and design decisions are entirely my own.
+
+AI was used to improve clarity, help with formatting diagrams, and assist with debugging.  
+All coding decisions, project structure choices, and the implementation of the application were done by me.
