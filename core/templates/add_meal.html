@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Add Meal</title>
+</head>
+<body>
+    <h1>Add Meal</h1>
+
+    <form method="POST">
+        {% csrf_token %}
+        <label>Food Name:</label><br>
+        <input type="text" name="food_name"><br><br>
+
+        <label>Protein (g):</label><br>
+        <input type="number" name="protein"><br><br>
+
+        <label>Calories:</label><br>
+        <input type="number" name="calories"><br><br>
+
+        <button type="submit">Save Meal</button>
+    </form>
+
+    <p><a href="/">Back to Home</a></p>
+</body>
+</html>

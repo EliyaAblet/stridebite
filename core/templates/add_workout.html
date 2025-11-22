@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Add Workout</title>
+</head>
+<body>
+    <h1>Add Workout</h1>
+
+    <form method="POST">
+        {% csrf_token %}
+        <label>Workout Type:</label><br>
+        <input type="text" name="workout_type" placeholder="Run, Strength, etc"><br><br>
+
+        <label>Duration (minutes):</label><br>
+        <input type="number" name="duration"><br><br>
+
+        <label>Notes (optional):</label><br>
+        <input type="text" name="notes"><br><br>
+
+        <button type="submit">Save Workout</button>
+    </form>
+
+    <p><a href="/">Back to Home</a></p>
+</body>
+</html>
