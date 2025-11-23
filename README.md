@@ -74,12 +74,12 @@ C --> E[Recent Entries List]
 ### 2. Log Meal Flow
 ```mermaid
 flowchart TD
-A[Open Log Meal Page] --> B[Enter Food Name]
-B --> C[Protein (g)]
-C --> D[Calories]
-D --> E[Time]
-E --> F[Save Meal]
-F --> G[Return to Dashboard]
+    A[Open Log Meal Page] --> B[Enter Food Name];
+    B --> C["Protein (g)"];
+    C --> D[Calories];
+    D --> E[Time];
+    E --> F[Save Meal];
+    F --> G[Return to Dashboard];
 ```
 
 ### 3. Log Workout Flow
