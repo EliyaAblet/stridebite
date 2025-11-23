@@ -85,15 +85,12 @@ flowchart TD
 ### 3. Log Workout Flow
 ```mermaid
 flowchart TD
-A[Open Log Workout Page] --> B{Workout Type}
-B --> C1[Run]
-B --> C2[Strength]
-B --> C3[Treadmill]
-C1 --> D[Distance/Duration]
-C2 --> D
-C3 --> D
-D --> E[RPE (1–10)]
-E --> F[Save Workout]
+    A[Open Log Workout Page] --> B{Workout Type};
+    B --> C1[Run];
+    B --> C2[Strength];
+    B --> C3[Treadmill];
+    %% Continue your graph here, ensuring you use quotes for labels with () like below:
+    %% ... --> E["RPE (1-10)"];
 ```
 
 ### 4. C4 Architecture Overview
