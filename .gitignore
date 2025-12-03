@@ -1,0 +1,9 @@
+# OS junk
+.DS_Store
+
+# Python
+__pycache__/
+*.py[cod]
+
+# SQLite databases
+*.sqlite3
