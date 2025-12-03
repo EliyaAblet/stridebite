@@ -1,0 +1,47 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Meals – StrideBite</title>
+</head>
+<body>
+  <h1>Meals</h1>
+
+  <nav>
+    <a href="{% url 'home' %}">Home</a> |
+    <a href="{% url 'meal_create' %}">Add Meal</a>
+  </nav>
+
+  <hr>
+
+  {% if meals %}
+    <table border="1" cellpadding="4">
+      <thead>
+        <tr>
+          <th>When</th>
+          <th>Food</th>
+          <th>Protein (g)</th>
+          <th>Calories</th>
+          <th></th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for meal in meals %}
+          <tr>
+            <td>{{ meal.logged_at }}</td>
+            <td>{{ meal.food_name }}</td>
+            <td>{{ meal.protein }}</td>
+            <td>{{ meal.calories }}</td>
+            <td>
+              <a href="{% url 'meal_update' meal.pk %}">Edit</a> |
+              <a href="{% url 'meal_delete' meal.pk %}">Delete</a>
+            </td>
+          </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  {% else %}
+    <p>No meals yet. <a href="{% url 'meal_create' %}">Add your first meal</a>.</p>
+  {% endif %}
+</body>
+</html>

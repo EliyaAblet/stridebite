@@ -1,0 +1,47 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Workouts – StrideBite</title>
+</head>
+<body>
+  <h1>Workouts</h1>
+
+  <nav>
+    <a href="{% url 'home' %}">Home</a> |
+    <a href="{% url 'workout_create' %}">Add Workout</a>
+  </nav>
+
+  <hr>
+
+  {% if workouts %}
+    <table border="1" cellpadding="4">
+      <thead>
+        <tr>
+          <th>When</th>
+          <th>Type</th>
+          <th>Duration</th>
+          <th>Calories</th>
+          <th></th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for w in workouts %}
+          <tr>
+            <td>{{ w.logged_at }}</td>
+            <td>{{ w.workout_type }}</td>
+            <td>{{ w.duration }}</td>
+            <td>{{ w.calories }}</td>
+            <td>
+              <a href="{% url 'workout_update' w.pk %}">Edit</a> |
+              <a href="{% url 'workout_delete' w.pk %}">Delete</a>
+            </td>
+          </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  {% else %}
+    <p>No workouts yet. <a href="{% url 'workout_create' %}">Add your first workout</a>.</p>
+  {% endif %}
+</body>
+</html>

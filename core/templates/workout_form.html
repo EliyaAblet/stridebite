@@ -1,0 +1,23 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>{{ title }}</title>
+</head>
+<body>
+  <h1>{{ title }}</h1>
+
+  <nav>
+    <a href="{% url 'home' %}">Home</a> |
+    <a href="{% url 'workout_list' %}">Back to Workouts</a>
+  </nav>
+
+  <hr>
+
+  <form method="post">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit">Save</button>
+  </form>
+</body>
+</html>

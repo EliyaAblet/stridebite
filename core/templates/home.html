@@ -1,150 +1,94 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <title>StrideBite – Dashboard</title>
-    <style>
-        body {
-            font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-            margin: 0;
-            padding: 2rem;
-            background: #f5f5f5;
-        }
-        header {
-            margin-bottom: 2rem;
-        }
-        .summary-cards {
-            display: flex;
-            gap: 1rem;
-            margin-bottom: 2rem;
-            flex-wrap: wrap;
-        }
-        .card {
-            background: white;
-            padding: 1rem 1.5rem;
-            border-radius: 8px;
-            box-shadow: 0 1px 3px rgba(0,0,0,0.08);
-            min-width: 180px;
-        }
-        h1 {
-            margin: 0 0 0.5rem 0;
-        }
-        a.button {
-            display: inline-block;
-            margin-right: 0.5rem;
-            margin-top: 0.5rem;
-            padding: 0.4rem 0.8rem;
-            border-radius: 4px;
-            background: #2563eb;
-            color: white;
-            text-decoration: none;
-            font-size: 0.9rem;
-        }
-        a.button.secondary {
-            background: #6b7280;
-        }
-        h2 {
-            margin-top: 2rem;
-            margin-bottom: 0.5rem;
-        }
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            background: white;
-            border-radius: 8px;
-            overflow: hidden;
-            margin-bottom: 1.5rem;
-        }
-        th, td {
-            padding: 0.5rem 0.75rem;
-            border-bottom: 1px solid #e5e7eb;
-            font-size: 0.9rem;
-        }
-        th {
-            text-align: left;
-            background: #f9fafb;
-        }
-        tbody tr:last-child td {
-            border-bottom: none;
-        }
-        .empty {
-            padding: 0.5rem 0.75rem;
-            font-size: 0.9rem;
-            color: #6b7280;
-        }
-    </style>
+  <meta charset="utf-8">
+  <title>StrideBite – Home</title>
+
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 40px;
+    }
+    nav a {
+      margin-right: 12px;
+      text-decoration: none;
+      color: #2a6ad6;
+      font-weight: bold;
+    }
+    nav a:hover {
+      text-decoration: underline;
+    }
+    h1 {
+      margin-bottom: 10px;
+    }
+    section {
+      margin-top: 30px;
+    }
+    ul {
+      padding-left: 20px;
+    }
+  </style>
 </head>
+
 <body>
-<header>
-    <h1>StrideBite Dashboard</h1>
-    <p>Quick overview of your recent meals and workouts.</p>
 
-    <a href="{% url 'add_meal' %}" class="button">Add Meal</a>
-    <a href="{% url 'add_workout' %}" class="button secondary">Add Workout</a>
-</header>
+  <h1>StrideBite Dashboard</h1>
+  <p>Quick overview of your recent meals and workouts.</p>
 
-<section class="summary-cards">
-    <div class="card">
-        <h3>Total Meals Logged</h3>
-        <p><strong>{{ meals_count }}</strong></p>
-    </div>
-    <div class="card">
-        <h3>Total Workouts Logged</h3>
-        <p><strong>{{ workouts_count }}</strong></p>
-    </div>
-</section>
+  <nav>
+    <a href="{% url 'meal_list' %}">All Meals</a>
+    <a href="{% url 'meal_create' %}">Add Meal</a>
+    <a href="{% url 'workout_list' %}">All Workouts</a>
+    <a href="{% url 'workout_create' %}">Add Workout</a>
+  </nav>
 
-<section>
+  <hr>
+
+  <!-- QUICK STATS -->
+  <section>
+    <h2>Quick Stats</h2>
+    <p>Total meals logged: <strong>{{ meal_count }}</strong></p>
+    <p>Total workouts logged: <strong>{{ workout_count }}</strong></p>
+  </section>
+
+  <!-- RECENT MEALS -->
+  <section>
     <h2>Recent Meals</h2>
-    {% if latest_meals %}
-        <table>
-            <thead>
-                <tr>
-                    <th>Food</th>
-                    <th>Protein (g)</th>
-                    <th>Calories</th>
-                </tr>
-            </thead>
-            <tbody>
-                {% for meal in latest_meals %}
-                    <tr>
-                        <td>{{ meal.food_name }}</td>
-                        <td>{{ meal.protein }}</td>
-                        <td>{{ meal.calories }}</td>
-                    </tr>
-                {% endfor %}
-            </tbody>
-        </table>
-    {% else %}
-        <div class="empty">No meals logged yet. Try adding one above.</div>
-    {% endif %}
-</section>
 
-<section>
-    <h2>Recent Workouts</h2>
-    {% if latest_workouts %}
-        <table>
-            <thead>
-                <tr>
-                    <th>Type</th>
-                    <th>Duration</th>
-                    <th>Notes</th>
-                </tr>
-            </thead>
-            <tbody>
-                {% for workout in latest_workouts %}
-                    <tr>
-                        <td>{{ workout.workout_type }}</td>
-                        <td>{{ workout.duration }}</td>
-                        <td>{{ workout.notes }}</td>
-                    </tr>
-                {% endfor %}
-            </tbody>
-        </table>
+    {% if recent_meals %}
+      <ul>
+        {% for meal in recent_meals %}
+          <li>
+            {{ meal.logged_at|date:"M d, Y H:i" }} —
+            <strong>{{ meal.food_name }}</strong>
+            ({{ meal.protein }} g protein, {{ meal.calories }} kcal)
+          </li>
+        {% endfor %}
+      </ul>
     {% else %}
-        <div class="empty">No workouts logged yet. Try adding one above.</div>
+      <p>No meals logged yet.</p>
     {% endif %}
-</section>
+  </section>
+
+  <!-- RECENT WORKOUTS -->
+  <section>
+    <h2>Recent Workouts</h2>
+
+    {% if recent_workouts %}
+      <ul>
+        {% for w in recent_workouts %}
+          <li>
+            {{ w.logged_at|date:"M d, Y H:i" }} —
+            <strong>{{ w.workout_type }}</strong>
+            ({{ w.duration }} minutes)
+          </li>
+        {% endfor %}
+      </ul>
+    {% else %}
+      <p>No workouts logged yet.</p>
+    {% endif %}
+  </section>
 
 </body>
 </html>
+
