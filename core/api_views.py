@@ -1,4 +1,7 @@
-from rest_framework import viewsets, permissions
+# core/api_views.py
+from rest_framework import viewsets
+from rest_framework.permissions import IsAuthenticated
+
 from .models import Meal, Workout, Sleep, WeighIn
 from .serializers import (
     MealSerializer,
@@ -6,43 +9,50 @@ from .serializers import (
     SleepSerializer,
     WeighInSerializer,
 )
+from .permissions import IsAppUser
 
 
-class UserOwnedModelViewSet(viewsets.ModelViewSet):
-    """
-    Base class that:
-    - requires authentication
-    - only returns the current user's rows
-    - automatically sets user on create
-    """
-    permission_classes = [permissions.IsAuthenticated]
+class MealViewSet(viewsets.ModelViewSet):
+    serializer_class = MealSerializer
+    permission_classes = [IsAuthenticated, IsAppUser]
 
     def get_queryset(self):
-        qs = super().get_queryset()
-        user = self.request.user
-        if not user.is_authenticated:
-            return qs.none()
-        return qs.filter(user=user)
+        # Each user sees only their own meals
+        return Meal.objects.filter(user=self.request.user).order_by("-logged_at")
 
     def perform_create(self, serializer):
         serializer.save(user=self.request.user)
 
 
-class MealViewSet(UserOwnedModelViewSet):
-    queryset = Meal.objects.all().order_by("-logged_at")
-    serializer_class = MealSerializer
-
-
-class WorkoutViewSet(UserOwnedModelViewSet):
-    queryset = Workout.objects.all().order_by("-logged_at")
+class WorkoutViewSet(viewsets.ModelViewSet):
     serializer_class = WorkoutSerializer
+    permission_classes = [IsAuthenticated, IsAppUser]
+
+    def get_queryset(self):
+        return Workout.objects.filter(user=self.request.user).order_by("-logged_at")
+
+    def perform_create(self, serializer):
+        serializer.save(user=self.request.user)
 
 
-class SleepViewSet(UserOwnedModelViewSet):
-    queryset = Sleep.objects.all().order_by("-logged_at")
+class SleepViewSet(viewsets.ModelViewSet):
     serializer_class = SleepSerializer
+    permission_classes = [IsAuthenticated, IsAppUser]
+
+    def get_queryset(self):
+        return Sleep.objects.filter(user=self.request.user).order_by("-logged_at")
+
+    def perform_create(self, serializer):
+        serializer.save(user=self.request.user)
 
 
-class WeighInViewSet(UserOwnedModelViewSet):
-    queryset = WeighIn.objects.all().order_by("-logged_at")
+class WeighInViewSet(viewsets.ModelViewSet):
     serializer_class = WeighInSerializer
+    permission_classes = [IsAuthenticated, IsAppUser]
+
+    def get_queryset(self):
+        return WeighIn.objects.filter(user=self.request.user).order_by("-logged_at")
+
+    def perform_create(self, serializer):
+        serializer.save(user=self.request.user)
+
