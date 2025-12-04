@@ -25,7 +25,7 @@ SECRET_KEY = "django-insecure-gz2wp#4ta#p$*sum-5qwvx1yhe8x0ug=w##ewb-i18v%kl(fvq
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS: list[str] = []
 
 
 # Application definition
@@ -37,7 +37,12 @@ INSTALLED_APPS = [
     "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.staticfiles",
-    'core',
+
+    # Third-party apps
+    "rest_framework",
+
+    # Local apps
+    "core",
 ]
 
 MIDDLEWARE = [
@@ -121,3 +126,18 @@ STATIC_URL = "static/"
 # https://docs.djangoproject.com/en/5.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
+
+
+# Django REST Framework configuration
+
+REST_FRAMEWORK = {
+    # By default, require authentication for all API endpoints.
+    "DEFAULT_PERMISSION_CLASSES": [
+        "rest_framework.permissions.IsAuthenticated",
+    ],
+    # Use session auth (for browser / DRF UI) and basic auth (for tools like curl/Postman).
+    "DEFAULT_AUTHENTICATION_CLASSES": [
+        "rest_framework.authentication.SessionAuthentication",
+        "rest_framework.authentication.BasicAuthentication",
+    ],
+}

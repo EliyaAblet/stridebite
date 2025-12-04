@@ -1,12 +1,15 @@
-from django.urls import path
-from . import api_views
+from rest_framework.routers import DefaultRouter
+from .api_views import (
+    MealViewSet,
+    WorkoutViewSet,
+    SleepViewSet,
+    WeighInViewSet,
+)
 
-urlpatterns = [
-    # Meals
-    path("meals/", api_views.MealListCreateAPIView.as_view(), name="api_meals"),
-    path("meals/<int:pk>/", api_views.MealRetrieveUpdateDestroyAPIView.as_view(), name="api_meal_detail"),
+router = DefaultRouter()
+router.register("meals", MealViewSet, basename="api-meal")
+router.register("workouts", WorkoutViewSet, basename="api-workout")
+router.register("sleep", SleepViewSet, basename="api-sleep")
+router.register("weighins", WeighInViewSet, basename="api-weighin")
 
-    # Workouts
-    path("workouts/", api_views.WorkoutListCreateAPIView.as_view(), name="api_workouts"),
-    path("workouts/<int:pk>/", api_views.WorkoutRetrieveUpdateDestroyAPIView.as_view(), name="api_workout_detail"),
-]
+urlpatterns = router.urls

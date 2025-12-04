@@ -74,23 +74,26 @@ C --> E[Recent Entries List]
 ### 2. Log Meal Flow
 ```mermaid
 flowchart TD
-    A[Open Log Meal Page] --> B[Enter Food Name];
-    B --> C["Protein (g)"];
-    C --> D[Calories];
-    D --> E[Time];
-    E --> F[Save Meal];
-    F --> G[Return to Dashboard];
+A[Open Log Meal Page] --> B[Enter Food Name]
+B --> C[Protein (g)]
+C --> D[Calories]
+D --> E[Time]
+E --> F[Save Meal]
+F --> G[Return to Dashboard]
 ```
 
 ### 3. Log Workout Flow
 ```mermaid
 flowchart TD
-    A[Open Log Workout Page] --> B{Workout Type};
-    B --> C1[Run];
-    B --> C2[Strength];
-    B --> C3[Treadmill];
-    %% Continue your graph here, ensuring you use quotes for labels with () like below:
-    %% ... --> E["RPE (1-10)"];
+A[Open Log Workout Page] --> B{Workout Type}
+B --> C1[Run]
+B --> C2[Strength]
+B --> C3[Treadmill]
+C1 --> D[Distance/Duration]
+C2 --> D
+C3 --> D
+D --> E[RPE (1–10)]
+E --> F[Save Workout]
 ```
 
 ### 4. C4 Architecture Overview
@@ -137,3 +140,53 @@ Examples of the types of prompts I used:
 
 AI was used to improve clarity, help with formatting diagrams, and assist with debugging.  
 All coding decisions, project structure choices, and the implementation of the application were done by me.
+
+---
+
+## API Overview (v1)
+
+Base URL: `http://127.0.0.1:8000/api/v1/`
+
+### Meals
+- `GET /meals/` – List meals
+- `POST /meals/` – Create meal
+- `GET /meals/{id}/` – Retrieve meal
+- `PUT/PATCH /meals/{id}/` – Update meal
+- `DELETE /meals/{id}/` – Delete meal
+
+### Workouts
+- `GET /workouts/`
+- `POST /workouts/`
+- `GET /workouts/{id}/`
+- `PUT/PATCH /workouts/{id}/`
+- `DELETE /workouts/{id}/`
+
+### Sleeps
+- `GET /sleeps/`
+- `POST /sleeps/`
+- `GET /sleeps/{id}/`
+- `PUT/PATCH /sleeps/{id}/`
+- `DELETE /sleeps/{id}/`
+
+### Weigh-ins
+- `GET /weighins/`
+- `POST /weighins/`
+- `GET /weighins/{id}/`
+- `PUT/PATCH /weighins/{id}/`
+- `DELETE /weighins/{id}/`
+
+### Example Requests
+
+```bash
+# List meals
+curl -X GET http://127.0.0.1:8000/api/v1/meals/
+
+# Create a meal
+curl -X POST http://127.0.0.1:8000/api/v1/meals/ \
+  -H "Content-Type: application/json" \
+  -d '{
+    "food_name": "Greek yogurt",
+    "protein": 20,
+    "calories": 150,
+    "logged_at": "2025-12-03T21:45:00Z"
+  }'
