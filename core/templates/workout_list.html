@@ -1,47 +1,62 @@
-<!doctype html>
-<html lang="en">
-<head>
-  <meta charset="utf-8">
-  <title>Workouts – StrideBite</title>
-</head>
-<body>
-  <h1>Workouts</h1>
+{% extends "base_dark.html" %}
 
-  <nav>
-    <a href="{% url 'home' %}">Home</a> |
-    <a href="{% url 'workout_create' %}">Add Workout</a>
-  </nav>
+{% block title %}Workouts · StrideBite{% endblock %}
 
-  <hr>
+{% block header_subtitle %}
+  <p class="header-subtitle">Your strength &amp; cardio sessions.</p>
+{% endblock %}
+
+{% block content %}
+<section class="sb-card">
+  <div class="card-header">
+    <h1 class="card-title">Workouts</h1>
+    <a href="{% url 'workout_create' %}" class="btn-primary">🏋️ Log Workout</a>
+  </div>
 
   {% if workouts %}
-    <table border="1" cellpadding="4">
-      <thead>
-        <tr>
-          <th>When</th>
-          <th>Type</th>
-          <th>Duration</th>
-          <th>Calories</th>
-          <th></th>
-        </tr>
-      </thead>
-      <tbody>
-        {% for w in workouts %}
+    <div class="table-wrapper">
+      <table class="sb-table">
+        <thead>
           <tr>
-            <td>{{ w.logged_at }}</td>
-            <td>{{ w.workout_type }}</td>
-            <td>{{ w.duration }}</td>
-            <td>{{ w.calories }}</td>
-            <td>
-              <a href="{% url 'workout_update' w.pk %}">Edit</a> |
-              <a href="{% url 'workout_delete' w.pk %}">Delete</a>
-            </td>
+            <th>When</th>
+            <th>Type</th>
+            <th>Duration</th>
+            <th>Calories</th>
+            <th></th>
           </tr>
-        {% endfor %}
-      </tbody>
-    </table>
+        </thead>
+        <tbody>
+          {% for w in workouts %}
+            <tr>
+              <td class="cell-small">
+                {{ w.logged_at|date:"M d, Y · H:i" }}
+              </td>
+              <td>{{ w.workout_type }}</td>
+              <td class="cell-small">
+                <span class="badge-pill">{{ w.duration }} min</span>
+              </td>
+              <td class="cell-small">
+                {% if w.calories %}
+                  <span class="badge-pill">{{ w.calories }} kcal</span>
+                {% else %}
+                  <span class="badge-pill">–</span>
+                {% endif %}
+              </td>
+              <td class="actions-cell">
+                <a href="{% url 'workout_update' w.pk %}" class="btn-secondary">Edit</a>
+                <a href="{% url 'workout_delete' w.pk %}" class="btn-danger">Delete</a>
+              </td>
+            </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
   {% else %}
-    <p>No workouts yet. <a href="{% url 'workout_create' %}">Add your first workout</a>.</p>
+    <p class="empty-state">
+      No workouts logged yet.
+      <a href="{% url 'workout_create' %}">Log your first session →</a>
+    </p>
   {% endif %}
-</body>
-</html>
+</section>
+{% endblock %}
+

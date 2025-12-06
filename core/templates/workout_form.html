@@ -1,23 +1,47 @@
-<!doctype html>
-<html lang="en">
-<head>
-  <meta charset="utf-8">
-  <title>{{ title }}</title>
-</head>
-<body>
-  <h1>{{ title }}</h1>
+{% extends "base_dark.html" %}
 
-  <nav>
-    <a href="{% url 'home' %}">Home</a> |
-    <a href="{% url 'workout_list' %}">Back to Workouts</a>
-  </nav>
+{% block title %}
+  {% if workout %}Edit Workout · StrideBite{% else %}Log Workout · StrideBite{% endif %}
+{% endblock %}
 
-  <hr>
+{% block header_subtitle %}
+  <p class="header-subtitle">
+    {% if workout %}Update your training session.{% else %}Log your latest sweat session.{% endif %}
+  </p>
+{% endblock %}
 
-  <form method="post">
+{% block content %}
+<section class="sb-card narrow">
+  <div class="card-header">
+    <h1 class="card-title">
+      {% if workout %}Edit Workout{% else %}Log Workout{% endif %}
+    </h1>
+    <span class="card-tag">Training</span>
+  </div>
+
+  <form method="post" class="sb-form">
     {% csrf_token %}
-    {{ form.as_p }}
-    <button type="submit">Save</button>
+    {{ form.non_field_errors }}
+
+    <div class="form-grid">
+      {% for field in form %}
+        <div class="form-field">
+          <label for="{{ field.id_for_label }}">{{ field.label }}</label>
+          {{ field }}
+          {% if field.help_text %}
+            <p class="help-text">{{ field.help_text }}</p>
+          {% endif %}
+          {% for error in field.errors %}
+            <p class="error-text">{{ error }}</p>
+          {% endfor %}
+        </div>
+      {% endfor %}
+    </div>
+
+    <div class="form-actions">
+      <a href="{% url 'workout_list' %}" class="btn-secondary">Cancel</a>
+      <button type="submit" class="btn-primary">Save</button>
+    </div>
   </form>
-</body>
-</html>
+</section>
+{% endblock %}
