@@ -149,14 +149,6 @@ def workout_delete(request, pk):
     return render(request, "workout_confirm_delete.html", {"workout": workout})
 
 
-# --------------------------
-#           LOGOUT
-# --------------------------
-def logout_view(request):
-    logout(request)
-    messages.success(request, "You have been logged out successfully.")
-    return redirect("home")
-
 def forgot_username(request):
     """
     Simple demo view:
@@ -200,3 +192,16 @@ def signup(request):
         form = UserCreationForm()
 
     return render(request, "signup.html", {"form": form})
+
+# --------------------------
+#           LOGOUT
+# --------------------------
+
+def logout_view(request):
+    """
+    Simple logout that accepts GET and POST.
+    Clears the session and sends user back to landing page.
+    """
+    logout(request)
+    messages.success(request, "You have been logged out successfully.")
+    return redirect("home") 

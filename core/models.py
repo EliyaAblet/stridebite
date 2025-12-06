@@ -1,108 +1,105 @@
-from django.conf import settings
+# core/models.py
 from django.db import models
+from django.contrib.auth import get_user_model
 from django.utils import timezone
-from django.core.validators import MinValueValidator, MaxValueValidator
+from django.core.validators import MinValueValidator, MaxValueValidator, RegexValidator
 
-# For convenience
-USER_MODEL = settings.AUTH_USER_MODEL
+User = get_user_model()
+
+# Simple validator to block HTML tags (and by extension script tags)
+no_html_validator = RegexValidator(
+    regex=r'^[^<>]*$',
+    message="HTML tags are not allowed in this field.",
+)
 
 
 class Meal(models.Model):
-    """
-    A single meal with protein and calories.
-    Linked to a user so each person sees only their own data.
-    """
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name="meals")
 
-    user = models.ForeignKey(
-        USER_MODEL,
-        on_delete=models.CASCADE,
-        related_name="meals",
-        null=True,
-        blank=True,  # keep optional for now so migrations are easier
+    # Text field with no-HTML validator
+    food_name = models.CharField(
+        max_length=200,
+        validators=[no_html_validator],
     )
-    food_name = models.CharField(max_length=100)
+
+    # Protein in grams, ex: 0–300g
     protein = models.PositiveIntegerField(
-        validators=[MinValueValidator(0)],
-        help_text="Protein in grams",
+        validators=[
+            MinValueValidator(0),
+            MaxValueValidator(300),
+        ],
+        help_text="Protein in grams (0–300).",
     )
+
+    # Calories in kcal, ex: 0–5000
     calories = models.PositiveIntegerField(
-        validators=[MinValueValidator(0)],
-        help_text="Calories for this meal",
+        validators=[
+            MinValueValidator(0),
+            MaxValueValidator(5000),
+        ],
+        help_text="Calories in kcal (0–5000).",
     )
+
+    # When this meal was logged
     logged_at = models.DateTimeField(default=timezone.now)
 
     def __str__(self) -> str:
-        return f"{self.food_name} ({self.protein}g protein, {self.calories} kcal)"
+        return f"{self.food_name} ({self.calories} kcal)"
 
 
 class Workout(models.Model):
-    """
-    A logged workout (run, strength, treadmill, etc.).
-    """
+    WORKOUT_TYPES = [
+        ("run", "Run"),
+        ("strength", "Strength"),
+        ("treadmill", "Treadmill"),
+        ("other", "Other"),
+    ]
 
-    user = models.ForeignKey(
-        USER_MODEL,
-        on_delete=models.CASCADE,
-        related_name="workouts",
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name="workouts")
+
+    workout_type = models.CharField(
+        max_length=50,
+        choices=WORKOUT_TYPES,
+        validators=[no_html_validator],
+    )
+
+    # Duration in minutes, ex: 1–600
+    duration = models.PositiveIntegerField(
+        validators=[
+            MinValueValidator(1),
+            MaxValueValidator(600),
+        ],
+        help_text="Duration in minutes (1–600).",
+    )
+
+    # Optional calories burned
+    calories = models.PositiveIntegerField(
         null=True,
         blank=True,
+        validators=[
+            MinValueValidator(0),
+            MaxValueValidator(5000),
+        ],
+        help_text="Estimated calories burned (0–5000).",
     )
-    workout_type = models.CharField(max_length=50)
-    duration = models.PositiveIntegerField(
-        validators=[MinValueValidator(1)],
-        help_text="Duration in minutes",
-    )
-    notes = models.TextField(blank=True)
+
     logged_at = models.DateTimeField(default=timezone.now)
 
-    def __str__(self) -> str:
-        return f"{self.workout_type} ({self.duration} min)"
-
-
-class WeighIn(models.Model):
-    """
-    Daily bodyweight entry.
-    """
-
-    user = models.ForeignKey(
-        USER_MODEL,
-        on_delete=models.CASCADE,
-        related_name="weigh_ins",
-        null=True,
+    # Optional notes – also blocked from containing HTML tags
+    notes = models.TextField(
         blank=True,
+        validators=[no_html_validator],
+        help_text="Optional notes about this workout (no HTML).",
     )
-    date = models.DateField(default=timezone.localdate)
-    weight_lbs = models.DecimalField(
-        max_digits=5,
-        decimal_places=2,
-        validators=[
-            MinValueValidator(50),
-            MaxValueValidator(400),
-        ],
-        help_text="Bodyweight in pounds",
-    )
-    note = models.CharField(max_length=200, blank=True)
-
-    class Meta:
-        ordering = ["-date"]
 
     def __str__(self) -> str:
-        return f"{self.date} – {self.weight_lbs} lbs"
+        return f"{self.workout_type} for {self.duration} min"
 
 
 class Sleep(models.Model):
-    """
-    Daily sleep entry (hours slept).
-    """
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name="sleeps")
 
-    user = models.ForeignKey(
-        USER_MODEL,
-        on_delete=models.CASCADE,
-        related_name="sleeps",
-        null=True,
-        blank=True,
-    )
-    date = models.DateField(default=timezone.localdate)
+    # Hours slept, ex: 0–24
     hours = models.DecimalField(
         max_digits=4,
         decimal_places=2,
@@ -110,43 +107,31 @@ class Sleep(models.Model):
             MinValueValidator(0),
             MaxValueValidator(24),
         ],
-        help_text="Total hours slept",
+        help_text="Hours slept (0–24).",
     )
-    sleep_quality = models.PositiveSmallIntegerField(
-        default=3,
+
+    logged_at = models.DateTimeField(default=timezone.now)
+
+    def __str__(self) -> str:
+        return f"{self.hours}h sleep"
+
+
+class WeighIn(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name="weighins")
+
+    # Weight in kg, ex: 30–400
+    weight_kg = models.DecimalField(
+        max_digits=5,
+        decimal_places=2,
         validators=[
-            MinValueValidator(1),
-            MaxValueValidator(5),
+            MinValueValidator(30),
+            MaxValueValidator(400),
         ],
-        help_text="1 = very poor, 5 = excellent",
+        help_text="Body weight in kg (30–400).",
     )
 
-    class Meta:
-        ordering = ["-date"]
+    logged_at = models.DateTimeField(default=timezone.now)
 
     def __str__(self) -> str:
-        return f"{self.date} – {self.hours}h (quality {self.sleep_quality})"
+        return f"{self.weight_kg} kg"
 
-
-class ProgressPhoto(models.Model):
-    """
-    Progress photo for visual tracking.
-    """
-
-    user = models.ForeignKey(
-        USER_MODEL,
-        on_delete=models.CASCADE,
-        related_name="progress_photos",
-        null=True,
-        blank=True,
-    )
-    date = models.DateField(default=timezone.localdate)
-    image = models.ImageField(upload_to="progress_photos/")
-    caption = models.CharField(max_length=200, blank=True)
-    uploaded_at = models.DateTimeField(default=timezone.now)
-
-    class Meta:
-        ordering = ["-date", "-uploaded_at"]
-
-    def __str__(self) -> str:
-        return f"Photo on {self.date} ({self.user})"

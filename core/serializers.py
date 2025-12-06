@@ -5,27 +5,26 @@ from .models import Meal, Workout, Sleep, WeighIn
 class MealSerializer(serializers.ModelSerializer):
     class Meta:
         model = Meal
-        # Let DRF include all fields; user will be read-only and set from request.user
-        fields = "__all__"
+        fields = ["id", "user", "food_name", "protein", "calories", "logged_at"]
         read_only_fields = ["id", "user"]
 
 
 class WorkoutSerializer(serializers.ModelSerializer):
     class Meta:
         model = Workout
-        fields = "__all__"
+        fields = ["id", "user", "workout_type", "duration", "calories", "logged_at"]
         read_only_fields = ["id", "user"]
 
 
 class SleepSerializer(serializers.ModelSerializer):
     class Meta:
         model = Sleep
-        fields = "__all__"
+        fields = ["id", "user", "date", "hours", "sleep_quality", "logged_at"]
         read_only_fields = ["id", "user"]
 
 
 class WeighInSerializer(serializers.ModelSerializer):
     class Meta:
         model = WeighIn
-        fields = "__all__"
+        fields = ["id", "user", "weight_kg", "logged_at"]
         read_only_fields = ["id", "user"]
