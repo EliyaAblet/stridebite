@@ -1,94 +1,537 @@
 <!doctype html>
 <html lang="en">
 <head>
-  <meta charset="utf-8">
-  <title>StrideBite – Home</title>
-
+  <meta charset="utf-8" />
+  <title>StrideBite – Dashboard</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
   <style>
+    :root {
+      --bg: #020617;
+      --bg-elevated: #020617;
+      --card: #020617;
+      --card-soft: #020617;
+      --accent: #22c55e;
+      --accent-soft: rgba(34, 197, 94, 0.12);
+      --accent-border: rgba(34, 197, 94, 0.4);
+      --text-main: #e5e7eb;
+      --text-muted: #9ca3af;
+      --border-subtle: #1f2937;
+      --danger: #f97373;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
     body {
-      font-family: Arial, sans-serif;
-      margin: 40px;
+      margin: 0;
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "SF Pro Text",
+        "Segoe UI", sans-serif;
+      background: radial-gradient(circle at top, #1f2937 0, #020617 48%);
+      color: var(--text-main);
+      min-height: 100vh;
     }
-    nav a {
-      margin-right: 12px;
+
+    a {
+      color: inherit;
       text-decoration: none;
-      color: #2a6ad6;
-      font-weight: bold;
     }
-    nav a:hover {
-      text-decoration: underline;
+
+    .page {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 24px 16px 40px;
     }
-    h1 {
+
+    /* Header */
+    header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      margin-bottom: 16px;
+    }
+
+    .app-title {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    .app-title h1 {
+      margin: 0;
+      font-size: 1.6rem;
+      letter-spacing: 0.02em;
+    }
+
+    .app-title p {
+      margin: 0;
+      font-size: 0.92rem;
+      color: var(--text-muted);
+    }
+
+    .user-pill {
+      padding: 6px 12px;
+      border-radius: 999px;
+      border: 1px solid var(--border-subtle);
+      font-size: 0.85rem;
+      color: var(--text-muted);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      white-space: nowrap;
+    }
+
+    .user-dot {
+      width: 7px;
+      height: 7px;
+      border-radius: 999px;
+      background: #22c55e;
+      box-shadow: 0 0 0 4px rgba(34, 197, 94, 0.25);
+    }
+
+    .logout-btn {
+      padding: 6px 14px;
+      border-radius: 999px;
+      border: 1px solid var(--border-subtle);
+      background: rgba(31, 41, 55, 0.7);
+      font-size: 0.82rem;
+      color: var(--text-main);
+      margin-left: 10px;
+      transition: 0.15s ease;
+    }
+
+    .logout-btn:hover {
+      background: rgba(55, 65, 81, 0.9);
+      border-color: rgba(148, 163, 184, 0.6);
+    }
+
+    /* Nav */
+    nav {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-bottom: 18px;
+    }
+
+    .nav-button {
+      padding: 8px 12px;
+      border-radius: 999px;
+      border: 1px solid var(--border-subtle);
+      background: rgba(15, 23, 42, 0.85);
+      font-size: 0.88rem;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .nav-button.primary {
+      background: linear-gradient(to right, #22c55e, #22c55e);
+      border-color: transparent;
+      color: #022c22;
+      font-weight: 600;
+    }
+
+    .nav-button .icon {
+      font-size: 1.05rem;
+    }
+
+    /* Layout grid */
+    main {
+      display: grid;
+      grid-template-columns: minmax(0, 2fr) minmax(0, 3fr);
+      gap: 18px;
+    }
+
+    @media (max-width: 900px) {
+      main {
+        grid-template-columns: minmax(0, 1fr);
+      }
+    }
+
+    /* Cards */
+    .card {
+      background: radial-gradient(
+        circle at top left,
+        rgba(55, 65, 81, 0.4) 0,
+        rgba(15, 23, 42, 0.98) 55%
+      );
+      border-radius: 18px;
+      padding: 16px 16px 14px;
+      border: 1px solid rgba(31, 41, 55, 0.9);
+      box-shadow: 0 18px 40px rgba(15, 23, 42, 0.9);
+    }
+
+    .card-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
       margin-bottom: 10px;
+      gap: 8px;
     }
-    section {
-      margin-top: 30px;
+
+    .card-title {
+      font-size: 0.95rem;
+      text-transform: uppercase;
+      letter-spacing: 0.09em;
+      color: var(--text-muted);
     }
-    ul {
-      padding-left: 20px;
+
+    .card-tag {
+      font-size: 0.78rem;
+      padding: 3px 8px;
+      border-radius: 999px;
+      border: 1px solid var(--accent-border);
+      background: var(--accent-soft);
+      color: var(--accent);
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+    }
+
+    .summary-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 10px;
+    }
+
+    .summary-card {
+      background: radial-gradient(
+        circle at top,
+        rgba(34, 197, 94, 0.08),
+        rgba(15, 23, 42, 0.96)
+      );
+      border-radius: 14px;
+      padding: 10px 12px 10px;
+      border: 1px solid rgba(31, 41, 55, 0.9);
+      display: flex;
+      flex-direction: column;
+      gap: 1px;
+    }
+
+    .summary-label {
+      font-size: 0.8rem;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+    }
+
+    .summary-count {
+      font-size: 1.45rem;
+      font-weight: 600;
+      margin-top: 2px;
+    }
+
+    .summary-footnote {
+      font-size: 0.78rem;
+      color: var(--text-muted);
+      margin-top: 2px;
+    }
+
+    .summary-footnote strong {
+      color: var(--accent);
+      font-weight: 500;
+    }
+
+    .list-shell {
+      margin-top: 4px;
+      border-radius: 12px;
+      border: 1px solid rgba(31, 41, 55, 0.9);
+      background: rgba(15, 23, 42, 0.8);
+      max-height: 290px;
+      overflow: hidden auto;
+    }
+
+    .list-shell ul {
+      list-style: none;
+      margin: 0;
+      padding: 0;
+    }
+
+    .list-item {
+      padding: 8px 11px;
+      border-bottom: 1px solid rgba(31, 41, 55, 0.9);
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+      font-size: 0.86rem;
+    }
+
+    .list-item:last-child {
+      border-bottom: none;
+    }
+
+    .list-main-line {
+      display: flex;
+      justify-content: space-between;
+      gap: 6px;
+    }
+
+    .list-primary {
+      font-weight: 500;
+    }
+
+    .list-meta {
+      font-size: 0.78rem;
+      color: var(--text-muted);
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+    }
+
+    .list-pill {
+      padding: 1px 6px;
+      border-radius: 999px;
+      background: rgba(31, 41, 55, 0.9);
+      border: 1px solid rgba(55, 65, 81, 0.9);
+      font-size: 0.75rem;
+      color: var(--text-muted);
+    }
+
+    .empty-state {
+      padding: 14px 14px 12px;
+      font-size: 0.84rem;
+      color: var(--text-muted);
+    }
+
+    .empty-state a {
+      color: var(--accent);
+      text-decoration: underline;
+      text-decoration-style: dotted;
+    }
+
+    .section-caption {
+      margin-top: 8px;
+      font-size: 0.78rem;
+      color: var(--text-muted);
+    }
+
+    .section-caption a {
+      color: var(--accent);
+      text-decoration: underline;
+      text-decoration-style: dotted;
+    }
+
+    footer {
+      margin-top: 18px;
+      font-size: 0.76rem;
+      color: var(--text-muted);
+      text-align: right;
+    }
+
+    /* Toast messages */
+    .toast-container {
+      position: fixed;
+      top: 18px;
+      right: 18px;
+      z-index: 9999;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .toast {
+      padding: 12px 16px;
+      border-radius: 10px;
+      background: rgba(34, 197, 94, 0.16);
+      border: 1px solid rgba(34, 197, 94, 0.45);
+      color: #bbf7d0;
+      font-size: 0.9rem;
+      backdrop-filter: blur(10px);
+      box-shadow: 0 18px 40px rgba(15, 23, 42, 0.9);
+      animation:
+        toast-slide-in 0.35s ease-out,
+        toast-fade-out 0.3s ease-in 2.7s forwards;
+    }
+
+    .toast.error {
+      background: rgba(248, 113, 113, 0.18);
+      border-color: rgba(248, 113, 113, 0.5);
+      color: #fecaca;
+    }
+
+    @keyframes toast-slide-in {
+      from {
+        opacity: 0;
+        transform: translateX(14px);
+      }
+      to {
+        opacity: 1;
+        transform: translateX(0);
+      }
+    }
+
+    @keyframes toast-fade-out {
+      to {
+        opacity: 0;
+        transform: translateX(8px);
+      }
     }
   </style>
 </head>
 
 <body>
+<div class="page">
 
-  <h1>StrideBite Dashboard</h1>
-  <p>Quick overview of your recent meals and workouts.</p>
+  <!-- Header -->
+  <header>
+    <div class="app-title">
+      <h1>StrideBite Dashboard</h1>
+      <p>Daily snapshot of your meals and workouts.</p>
+    </div>
 
+    <div style="display: flex; align-items: center; gap: 10px;">
+      <div class="user-pill">
+        <span class="user-dot"></span>
+        <span>Signed in as <strong>{{ request.user.username }}</strong></span>
+      </div>
+      <a href="{% url 'logout' %}" class="logout-btn">Log out</a>
+    </div>
+  </header>
+
+  <!-- Navigation -->
   <nav>
-    <a href="{% url 'meal_list' %}">All Meals</a>
-    <a href="{% url 'meal_create' %}">Add Meal</a>
-    <a href="{% url 'workout_list' %}">All Workouts</a>
-    <a href="{% url 'workout_create' %}">Add Workout</a>
+    <a href="{% url 'meal_create' %}" class="nav-button primary">
+      <span class="icon">➕</span><span>Log Meal</span>
+    </a>
+    <a href="{% url 'workout_create' %}" class="nav-button primary">
+      <span class="icon">🏋️</span><span>Log Workout</span>
+    </a>
+
+    <a href="{% url 'meal_list' %}" class="nav-button">
+      <span class="icon">🍽️</span><span>View Meals</span>
+    </a>
+    <a href="{% url 'workout_list' %}" class="nav-button">
+      <span class="icon">📈</span><span>View Workouts</span>
+    </a>
   </nav>
 
-  <hr>
+  <!-- Main content -->
+  <main>
+    <!-- Left column: Quick stats -->
+    <section class="card">
+      <div class="card-header">
+        <div class="card-title">Today / Overall</div>
+        <div class="card-tag">Quick Stats</div>
+      </div>
 
-  <!-- QUICK STATS -->
-  <section>
-    <h2>Quick Stats</h2>
-    <p>Total meals logged: <strong>{{ meal_count }}</strong></p>
-    <p>Total workouts logged: <strong>{{ workout_count }}</strong></p>
-  </section>
+      <div class="summary-grid">
+        <div class="summary-card">
+          <div class="summary-label">Total Meals Logged</div>
+          <div class="summary-count">{{ meal_count|default:"0" }}</div>
+          <div class="summary-footnote">
+            Keep your protein consistent and honest.
+            <strong>Every plate counts.</strong>
+          </div>
+        </div>
 
-  <!-- RECENT MEALS -->
-  <section>
-    <h2>Recent Meals</h2>
+        <div class="summary-card">
+          <div class="summary-label">Total Workouts Logged</div>
+          <div class="summary-count">{{ workout_count|default:"0" }}</div>
+          <div class="summary-footnote">
+            Small sessions add up.
+            <strong>Consistency beats perfection.</strong>
+          </div>
+        </div>
+      </div>
 
-    {% if recent_meals %}
-      <ul>
-        {% for meal in recent_meals %}
-          <li>
-            {{ meal.logged_at|date:"M d, Y H:i" }} —
-            <strong>{{ meal.food_name }}</strong>
-            ({{ meal.protein }} g protein, {{ meal.calories }} kcal)
-          </li>
-        {% endfor %}
-      </ul>
-    {% else %}
-      <p>No meals logged yet.</p>
-    {% endif %}
-  </section>
+      <p class="section-caption">
+        Tip: For Milestone 2 demo, you can talk through how these numbers are
+        populated from authenticated user data (no global anonymous access).
+      </p>
+    </section>
 
-  <!-- RECENT WORKOUTS -->
-  <section>
-    <h2>Recent Workouts</h2>
+    <!-- Right column: Recent activity -->
+    <section class="card">
+      <div class="card-header">
+        <div class="card-title">Recent Activity</div>
+        <div class="card-tag">Last few entries</div>
+      </div>
 
-    {% if recent_workouts %}
-      <ul>
-        {% for w in recent_workouts %}
-          <li>
-            {{ w.logged_at|date:"M d, Y H:i" }} —
-            <strong>{{ w.workout_type }}</strong>
-            ({{ w.duration }} minutes)
-          </li>
-        {% endfor %}
-      </ul>
-    {% else %}
-      <p>No workouts logged yet.</p>
-    {% endif %}
-  </section>
+      <!-- Recent Meals -->
+      <div class="list-shell" style="margin-bottom: 10px;">
+        {% if recent_meals %}
+          <ul>
+            {% for meal in recent_meals %}
+              <li class="list-item">
+                <div class="list-main-line">
+                  <span class="list-primary">{{ meal.food_name }}</span>
+                  <span class="list-pill">
+                    {{ meal.logged_at|date:"M d, H:i" }}
+                  </span>
+                </div>
+                <div class="list-meta">
+                  <span>{{ meal.protein }} g protein</span>
+                  <span>·</span>
+                  <span>{{ meal.calories }} kcal</span>
+                </div>
+              </li>
+            {% endfor %}
+          </ul>
+        {% else %}
+          <div class="empty-state">
+            No meals logged yet.
+            <a href="{% url 'meal_create' %}">Log your first meal →</a>
+          </div>
+        {% endif %}
+      </div>
 
+      <!-- Recent Workouts -->
+      <div class="list-shell">
+        {% if recent_workouts %}
+          <ul>
+            {% for w in recent_workouts %}
+              <li class="list-item">
+                <div class="list-main-line">
+                  <span class="list-primary">{{ w.workout_type }}</span>
+                  <span class="list-pill">
+                    {{ w.logged_at|date:"M d, H:i" }}
+                  </span>
+                </div>
+                <div class="list-meta">
+                  <span>{{ w.duration }} min</span>
+                  {% if w.calories %}
+                    <span>·</span>
+                    <span>{{ w.calories }} kcal</span>
+                  {% endif %}
+                </div>
+              </li>
+            {% endfor %}
+          </ul>
+        {% else %}
+          <div class="empty-state">
+            No workouts logged yet.
+            <a href="{% url 'workout_create' %}">Log your first workout →</a>
+          </div>
+        {% endif %}
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    StrideBite – built for CYBR 8470 Milestone 2 (secure, authenticated tracking only).
+  </footer>
+
+</div>
+
+{% if messages %}
+  <div class="toast-container">
+    {% for message in messages %}
+      <div class="toast {% if message.tags %}{{ message.tags }}{% endif %}">
+        {{ message }}
+      </div>
+    {% endfor %}
+  </div>
+
+  <script>
+    // Auto-dismiss toasts after ~3 seconds
+    window.addEventListener("DOMContentLoaded", function () {
+      setTimeout(function () {
+        document.querySelectorAll(".toast").forEach(function (el) {
+          el.remove();
+        });
+      }, 3000);
+    });
+  </script>
+{% endif %}
 </body>
 </html>
-

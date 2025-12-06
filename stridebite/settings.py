@@ -43,6 +43,7 @@ INSTALLED_APPS = [
 
     # Local apps
     "core",
+    "rest_framework.authtoken",
 ]
 
 MIDDLEWARE = [
@@ -131,13 +132,15 @@ DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 # Django REST Framework configuration
 
 REST_FRAMEWORK = {
-    # By default, require authentication for all API endpoints.
+    "DEFAULT_AUTHENTICATION_CLASSES": [
+        "rest_framework.authentication.TokenAuthentication",   # allows /api/token/
+        "rest_framework.authentication.SessionAuthentication", # logs in via /admin or DRF login
+    ],
     "DEFAULT_PERMISSION_CLASSES": [
         "rest_framework.permissions.IsAuthenticated",
     ],
-    # Use session auth (for browser / DRF UI) and basic auth (for tools like curl/Postman).
-    "DEFAULT_AUTHENTICATION_CLASSES": [
-        "rest_framework.authentication.SessionAuthentication",
-        "rest_framework.authentication.BasicAuthentication",
-    ],
 }
+
+LOGIN_URL = "login"
+LOGIN_REDIRECT_URL = "dashboard"
+LOGOUT_REDIRECT_URL = "home"   # optional if you already use next_page="home"
