@@ -13,20 +13,20 @@ covering:
 
 ## 1. Architecture & Threat Model (High Level)
 
-**Tech stack**
+Tech stack
 
 - Django 5.x (server-rendered UI + REST API using Django REST Framework)
 - Django REST Framework (DRF) for JSON endpoints
 - Relational database accessed only via Django ORM (no raw SQL)
 - Deployed in a single Docker container on an AWS EC2 instance
 
-**Main assets**
+Main assets
 
 - User accounts and password hashes
 - Meal and workout logs (time, duration, calories, notes)
 - Authentication tokens for API access (DRF token auth)
 
-**Primary threats considered**
+Primary threats considered
 
 - Unauthorized access to meal/workout data
 - Account takeover via weak auth / session mis-handling
@@ -37,37 +37,63 @@ covering:
 
 ---
 
-## 2. Authentication & Authorization
+## 2. Application & Container Hardening
 
-### 2.1 Django authentication
+### 2.1. Environment-based configuration (Application-level hardening)
 
-- StrideBite uses **Django’s built-in authentication system**:
-  - Passwords are hashed using Django’s default password hasher.
-  - Login and logout are handled via Django’s `LoginView` and `LogoutView`.
-- Only the following views are accessible to unauthenticated users:
-  - Public landing page (`/`)
-  - Login (`/login/`)
-  - Signup (`/signup/`)
-  - Password reset & forgot-username flow
+To avoid hard-coding secrets and environment-specific values in the codebase, the Django settings were updated to read critical configuration from environment variables:
 
-All other views are protected with `@login_required` or DRF permissions.
+- **`DJANGO_SECRET_KEY`**  
+  - The Django `SECRET_KEY` is no longer stored in `settings.py`.  
+  - It is read from the `DJANGO_SECRET_KEY` environment variable at runtime.  
+  - This prevents accidental exposure of secrets in version control and makes key rotation easier.
 
-### 2.2 Per-user data scoping
+- **`DJANGO_DEBUG`**  
+  - The `DEBUG` flag is controlled by the `DJANGO_DEBUG` environment variable.  
+  - In development, `DJANGO_DEBUG=True` can be set locally.  
+  - In production (e.g., Docker/EC2), `DJANGO_DEBUG=False` is enforced so that detailed error pages are never exposed to end users.
 
-- All meal and workout queries are filtered by `user=request.user`.
-- CRUD views use `get_object_or_404(..., user=request.user)` so that users **cannot access or edit another user’s data**, even by guessing IDs.
+- **`DJANGO_ALLOWED_HOSTS`**  
+  - The `ALLOWED_HOSTS` setting is populated from the `DJANGO_ALLOWED_HOSTS` environment variable (comma-separated list).  
+  - This allows different hostnames/IPs for development and production without changing code, and helps protect against Host header attacks.
 
-### 2.3 REST API (DRF) auth & permissions
+- **Database configuration (`POSTGRES_*` variables)**  
+  - Database connection details (`POSTGRES_DB`, `POSTGRES_USER`, `POSTGRES_PASSWORD`, `POSTGRES_HOST`, `POSTGRES_PORT`) are read from environment variables instead of being hard-coded.  
+  - This keeps credentials out of source control and allows different databases for local development vs. production.
 
-In `settings.py`:
+Overall, using environment variables for sensitive and environment-specific settings reduces the risk of credential leakage, keeps the repository clean, and aligns with 12-factor app best practices.
 
-```python
-REST_FRAMEWORK = {
-    "DEFAULT_AUTHENTICATION_CLASSES": [
-        "rest_framework.authentication.TokenAuthentication",
-        "rest_framework.authentication.SessionAuthentication",
-    ],
-    "DEFAULT_PERMISSION_CLASSES": [
-        "rest_framework.permissions.IsAuthenticated",
-    ],
-}
+---
+
+### 2.2. Container Hardening (Dockerfile)
+
+The Docker image for StrideBite was hardened to reduce the attack surface and follow container security best practices.
+
+**Base image & dependencies**
+
+- Uses a slim base image: `python:3.12-slim` to minimize the OS footprint and reduce the number of installed packages.
+- Installs only the necessary system dependencies (`build-essential`, `libpq-dev`) with `--no-install-recommends` and then cleans up `apt` lists:
+  - `rm -rf /var/lib/apt/lists/*` to reduce image size and remove cached package metadata.
+
+**Python & pip hardening**
+
+- `PYTHONDONTWRITEBYTECODE=1` prevents `.pyc` files from being written, keeping the container filesystem cleaner and less cluttered.
+- `PYTHONUNBUFFERED=1` ensures logs are flushed directly to stdout/stderr for better observability.
+- `PIP_NO_CACHE_DIR=1` and `pip install --no-cache-dir` are used to avoid storing pip caches inside the image.
+- `PYTHONFAULTHANDLER=1` improves error diagnostics by enabling Python’s fault handler.
+
+**Non-root user**
+
+- A dedicated, non-privileged `app` user and group are created:
+  - `addgroup --system app && adduser --system --ingroup app app`
+- Application code is copied with `--chown=app:app` and the container switches to the non-root user:
+  - `USER app`
+- Running the Django application as a non-root user significantly reduces the impact of a potential compromise inside the container.
+
+**Production WSGI server**
+
+- The container does **not** use Django’s development server.  
+- It runs `gunicorn` instead:
+
+```bash
+CMD ["gunicorn", "stridebite.wsgi:application", "--bind", "0.0.0.0:8000", "--workers", "3"]
