@@ -115,20 +115,6 @@ Services --> Models[Django Models]
 
 ---
 
-## AI Use Disclosure (Required by Course Policy)
-
-AI assistance was used only for the following purposes:
-
-1. Documentation clarification
-2. Formatting diagrams
-3. Debugging explanations related to Django errors
-4. Improving organization of written content
-
-All models, views, serializers, business logic, URL routing, and project structure were written by the developer.
-AI did not generate application code or architecture decisions.
-
----
-
 ## API Overview (v1)
 
 Base URL:
@@ -209,3 +195,17 @@ The project now supports cloud deployment:
 
 Milestone 2 delivered a fully functional backend, enhanced application security, hardened container setup, and a deployable cloud-ready environment.
 The project now follows secure development practices and is suitable for production-style deployment.
+
+---
+
+## AI Use Disclosure (Required by Course Policy)
+
+AI assistance was used only for:
+
+1. Documentation clarification  
+2. Formatting diagrams  
+3. Debugging explanations related to Django errors  
+4. Improving organization of written content  
+5. Help with HTML files
+
+All models, views, serializers, business logic, URL routing, and project structure were written by me help of ChatGPT.
