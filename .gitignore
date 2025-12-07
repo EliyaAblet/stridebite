@@ -7,3 +7,4 @@ __pycache__/
 
 # SQLite databases
 *.sqlite3
+stridebitekey.pem
