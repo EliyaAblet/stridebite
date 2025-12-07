@@ -198,7 +198,7 @@ The project now follows secure development practices and is suitable for product
 
 ---
 
-## AI Use Disclosure (Required by Course Policy)
+## AI Use Disclosure
 
 AI assistance was used only for:
 
