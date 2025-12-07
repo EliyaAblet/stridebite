@@ -208,4 +208,4 @@ AI assistance was used only for:
 4. Improving organization of written content  
 5. Help with HTML files
 
-All models, views, serializers, business logic, URL routing, and project structure were written by me help of ChatGPT.
+All models, views, serializers, business logic, URL routing, and project structure were written by me minimal help of ChatGPT.
