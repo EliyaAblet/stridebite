@@ -190,3 +190,80 @@ curl -X POST http://127.0.0.1:8000/api/v1/meals/ \
     "calories": 150,
     "logged_at": "2025-12-03T21:45:00Z"
   }'
+
+Milestone 2 Summary (Implementation, Hardening, Deployment)
+Overview
+
+Milestone 2 required implementing the full backend functionality, securing the application, hardening the container environment, and preparing the project for deployment on a cloud platform. This section summarizes the changes that were completed for this milestone.
+
+1. Application Implementation
+
+Completed Django models, views, and serializers for meals and workouts
+
+Integrated Django REST Framework for API endpoints
+
+Added token-based authentication and session authentication
+
+Added per-user access controls to prevent cross-user data exposure
+
+Implemented validation at both the model level and serializer level
+
+Improved templates for user interactions such as creating or editing meals and workouts
+
+2. Application Hardening
+
+The application was updated to use environment-based configuration to avoid storing sensitive values in source control.
+
+The following settings were moved to environment variables:
+
+DJANGO_SECRET_KEY
+
+DJANGO_DEBUG
+
+DJANGO_ALLOWED_HOSTS
+
+Database credentials (POSTGRES_DB, POSTGRES_USER, POSTGRES_PASSWORD, POSTGRES_HOST, POSTGRES_PORT)
+
+This approach removes secrets from the repository, prevents accidental exposure, and aligns with common security practices used in production systems.
+
+3. Container Hardening
+
+The Dockerfile was redesigned to improve security and reliability. Key improvements include:
+
+Using a minimal base image (python:3.12-slim)
+
+Installing only required system dependencies
+
+Removing package manager caches to reduce image size
+
+Disabling Python bytecode generation inside the container
+
+Disabling pip caching
+
+Creating a non-root user to run the application
+
+Running the server using Gunicorn instead of Django’s development server
+
+Adding a Docker health check command based on Django’s deployment checks
+
+These measures reduce the attack surface and make the container more suitable for production use.
+
+4. Deployment Preparation (EC2)
+
+Deployment steps were prepared for running the Dockerized application on an AWS EC2 instance:
+
+Updating the instance and installing Docker
+
+Cloning the project repository
+
+Building and running the container with the required environment variables
+
+Mapping port 8000 for external access
+
+Ensuring the EC2 security group allows only necessary ports
+
+Although the deployment itself may be completed during the final presentation, the project is structured so it can be deployed without code changes.
+
+5. Summary
+
+Milestone 2 focused on completing the backend implementation, enforcing proper security measures, hardening the Docker container, and preparing the project for deployment. The project now follows strong security and configuration practices, uses a production-ready server setup, and is deployable on cloud environments such as AWS EC2.
