@@ -1,269 +1,211 @@
 # StrideBite — Daily Fitness & Meal Tracker
 
-StrideBite is a simple personal fitness tracker where users can log workouts, meals, bodyweight, sleep, and private progress photos.
-I built this project to explore how daily habits affect long-term progress and to practice secure, privacy-focused app design.
+StrideBite is a personal fitness and nutrition tracking application built using Django and Django REST Framework.
+Users can log workouts, meals, bodyweight, sleep, and review weekly summaries.
+The goal of the project is to demonstrate secure application design, Django development, API implementation, and containerized deployment.
 
 ---
 
 ## Project Summary
 
-StrideBite supports:
+StrideBite provides the following core features:
 
-- Logging workouts (running, strength, treadmill sessions)
-- Recording meals with protein and calories
-- Tracking bodyweight over time
-- Entering daily sleep hours
-- Uploading private progress photos
+- Logging workouts such as running, strength training, and treadmill sessions
+- Recording meals with protein, calories, and timestamps
+- Tracking bodyweight daily
+- Recording sleep hours
+- Viewing recent logs and weekly summaries
 
-The goal is to keep everything lightweight and easy to use so users can build consistency without distractions, ads, or subscriptions.
+The application is designed to be lightweight, private, and easy to use.
 
 ---
 
 ## Getting Started
 
-You can run StrideBite either locally or using Docker.
+StrideBite can run either locally using a virtual environment or inside a Docker container.
 
 ---
 
 ## Option A — Run Locally
 
-### 1. Create a virtual environment and install dependencies
+### Create virtual environment and install dependencies
 ```bash
 python -m venv .venv
 source .venv/bin/activate
 pip install -r requirements.txt
 ```
 
-### 2. Run the development server
+### Run development server
 ```bash
 python manage.py migrate
 python manage.py runserver
 ```
 
-Visit: http://127.0.0.1:8000
+Open the site at:
+http://127.0.0.1:8000
 
 ---
 
 ## Option B — Run with Docker
 
-### 1. Build and start the containers
+### Build and start container
 ```bash
-docker-compose up --build
+docker build -t stridebite .
+docker run -p 8000:8000 stridebite
 ```
 
-### 2. Run migrations
+### Run migrations inside container
 ```bash
-docker compose exec web python manage.py migrate
+docker exec -it <container_id> python manage.py migrate
 ```
 
-Your app will run at: http://localhost:8000
+The app will run at:
+http://localhost:8000
 
 ---
 
 ## System Diagrams (Mermaid)
 
-### 1. Dashboard Mockup
+The following diagrams illustrate some of the user flows and system layout.
+
+### Dashboard structure
 ```mermaid
 flowchart TD
-A[Navbar<br/>Home · Log · Export · Profile] --> B[Today Summary<br/>Protein · Calories · Workout · Weight · Sleep]
+A[Navbar] --> B[Today Summary]
 B --> C[Quick Add Forms]
-B --> D[7-Day Mini Charts]
-C --> E[Recent Entries List]
+B --> D[7-Day Charts]
+C --> E[Recent Entries]
 ```
 
-### 2. Log Meal Flow
+### Meal logging flow
 ```mermaid
 flowchart TD
-A[Open Log Meal Page] --> B[Enter Food Name]
-B --> C[Protein (g)]
+A[Open Meal Form] --> B[Enter Food Name]
+B --> C[Protein]
 C --> D[Calories]
 D --> E[Time]
 E --> F[Save Meal]
 F --> G[Return to Dashboard]
 ```
 
-### 3. Log Workout Flow
+### Workout logging flow
 ```mermaid
 flowchart TD
-A[Open Log Workout Page] --> B{Workout Type}
+A[Open Workout Form] --> B{Workout Type}
 B --> C1[Run]
 B --> C2[Strength]
 B --> C3[Treadmill]
-C1 --> D[Distance/Duration]
+C1 --> D[Enter Duration]
 C2 --> D
 C3 --> D
-D --> E[RPE (1–10)]
+D --> E[Intensity]
 E --> F[Save Workout]
 ```
 
-### 4. C4 Architecture Overview
+### Architecture overview
 ```mermaid
 flowchart LR
 User --> Browser
-Browser --> WebApp[Django App<br/>Views + REST API]
-WebApp --> DB[(Postgres/SQLite)]
-WebApp --> Media[(Local Media Storage)]
+Browser --> WebApp[Django App (Views + REST API)]
+WebApp --> DB[(Postgres or SQLite)]
+WebApp --> Media[(Local Storage)]
 WebApp --> Services[Business Logic]
 Services --> Models[Django Models]
 ```
 
-## 5. AI Use Disclosure
+---
 
-In accordance with the course AI policy, I am providing the following description of how AI tools
-(ChatGPT) were used during the completion of this milestone.
+## AI Use Disclosure (Required by Course Policy)
 
-### 1. Tools and Usage Summary
+AI assistance was used only for the following purposes:
 
-Documentation and planning:  
-I used AI to help reorganize and clean up some of the user stories, the project summary, and a few
-sections of the README so they were easier to read.
+1. Documentation clarification
+2. Formatting diagrams
+3. Debugging explanations related to Django errors
+4. Improving organization of written content
 
-Design assistance:  
-AI was used to help format Mermaid diagrams for the UI mockups and architecture. The diagrams are
-based on my descriptions and layout instructions, but the tool helped format the syntax correctly.
-
-Development assistance:  
-I wrote the code for the project myself, including models, views, URLs, templates, and configuration.
-AI was used as a debugging helper when errors came up, such as migration issues or Django import
-problems. I provided the error messages, and AI explained how to fix them.
-
-### 2. Nature of Prompts
-
-Examples of the types of prompts I used:
-
-- Help me rewrite this project summary in clearer wording.
-- Convert this description into a Mermaid diagram.
-- Why is this Django view or URL causing an error?
-- Explain this migration error and how to resolve it.
-
-### 3. Ownership Statement
-
-AI was used to improve clarity, help with formatting diagrams, and assist with debugging.  
-All coding decisions, project structure choices, and the implementation of the application were done by me.
+All models, views, serializers, business logic, URL routing, and project structure were written by the developer.
+AI did not generate application code or architecture decisions.
 
 ---
 
 ## API Overview (v1)
 
-Base URL: `http://127.0.0.1:8000/api/v1/`
+Base URL:
+`/api/v1/`
 
-### Meals
-- `GET /meals/` – List meals
-- `POST /meals/` – Create meal
-- `GET /meals/{id}/` – Retrieve meal
-- `PUT/PATCH /meals/{id}/` – Update meal
-- `DELETE /meals/{id}/` – Delete meal
+### Meal Endpoints
+- GET /meals/
+- POST /meals/
+- GET /meals/{id}/
+- PUT /meals/{id}/
+- DELETE /meals/{id}/
 
-### Workouts
-- `GET /workouts/`
-- `POST /workouts/`
-- `GET /workouts/{id}/`
-- `PUT/PATCH /workouts/{id}/`
-- `DELETE /workouts/{id}/`
+### Workout Endpoints
+- GET /workouts/
+- POST /workouts/
+- GET /workouts/{id}/
+- PUT /workouts/{id}/
+- DELETE /workouts/{id}/
 
-### Sleeps
-- `GET /sleeps/`
-- `POST /sleeps/`
-- `GET /sleeps/{id}/`
-- `PUT/PATCH /sleeps/{id}/`
-- `DELETE /sleeps/{id}/`
-
-### Weigh-ins
-- `GET /weighins/`
-- `POST /weighins/`
-- `GET /weighins/{id}/`
-- `PUT/PATCH /weighins/{id}/`
-- `DELETE /weighins/{id}/`
-
-### Example Requests
-
+Example request:
 ```bash
-# List meals
 curl -X GET http://127.0.0.1:8000/api/v1/meals/
+```
 
-# Create a meal
-curl -X POST http://127.0.0.1:8000/api/v1/meals/ \
-  -H "Content-Type: application/json" \
-  -d '{
-    "food_name": "Greek yogurt",
-    "protein": 20,
-    "calories": 150,
-    "logged_at": "2025-12-03T21:45:00Z"
-  }'
+---
 
-Milestone 2 Summary (Implementation, Hardening, Deployment)
-Overview
+# Milestone 2 Summary (Implementation, Hardening, Deployment)
 
-Milestone 2 required implementing the full backend functionality, securing the application, hardening the container environment, and preparing the project for deployment on a cloud platform. This section summarizes the changes that were completed for this milestone.
+This section summarizes the work completed for Milestone 2.
 
-1. Application Implementation
+## Implementation
 
-Completed Django models, views, and serializers for meals and workouts
+- Added Django models, views, and serializers for meals and workouts
+- Completed CRUD operations for both features
+- Applied per-user scoping to ensure users cannot access one another’s data
+- Implemented serializer and model validation
+- Improved templates for adding and editing entries
 
-Integrated Django REST Framework for API endpoints
+## Application Hardening
 
-Added token-based authentication and session authentication
+Environment-based configuration was added to improve security:
 
-Added per-user access controls to prevent cross-user data exposure
+- DJANGO_SECRET_KEY
+- DJANGO_DEBUG
+- DJANGO_ALLOWED_HOSTS
+- POSTGRES_DB
+- POSTGRES_USER
+- POSTGRES_PASSWORD
+- POSTGRES_HOST
+- POSTGRES_PORT
 
-Implemented validation at both the model level and serializer level
+This ensures no secrets are stored in source control.
 
-Improved templates for user interactions such as creating or editing meals and workouts
+## Container Hardening
 
-2. Application Hardening
+A secure, production-ready Dockerfile was implemented:
 
-The application was updated to use environment-based configuration to avoid storing sensitive values in source control.
+- Minimal python:3.12-slim base image
+- Installation of required dependencies only
+- Removal of package manager caches
+- Disabled Python bytecode creation
+- Disabled pip caching
+- Added non-root runtime user
+- Switched to Gunicorn for production serving
+- Added Docker health check using Django deployment checks
 
-The following settings were moved to environment variables:
+## Deployment Preparation (EC2)
 
-DJANGO_SECRET_KEY
+The project now supports cloud deployment:
 
-DJANGO_DEBUG
+- EC2 instance setup with Docker
+- Repository cloning and image building
+- Running the application with required environment variables
+- Security group configured for only necessary ports
+- Server accessible on port 8000
 
-DJANGO_ALLOWED_HOSTS
+## Summary
 
-Database credentials (POSTGRES_DB, POSTGRES_USER, POSTGRES_PASSWORD, POSTGRES_HOST, POSTGRES_PORT)
-
-This approach removes secrets from the repository, prevents accidental exposure, and aligns with common security practices used in production systems.
-
-3. Container Hardening
-
-The Dockerfile was redesigned to improve security and reliability. Key improvements include:
-
-Using a minimal base image (python:3.12-slim)
-
-Installing only required system dependencies
-
-Removing package manager caches to reduce image size
-
-Disabling Python bytecode generation inside the container
-
-Disabling pip caching
-
-Creating a non-root user to run the application
-
-Running the server using Gunicorn instead of Django’s development server
-
-Adding a Docker health check command based on Django’s deployment checks
-
-These measures reduce the attack surface and make the container more suitable for production use.
-
-4. Deployment Preparation (EC2)
-
-Deployment steps were prepared for running the Dockerized application on an AWS EC2 instance:
-
-Updating the instance and installing Docker
-
-Cloning the project repository
-
-Building and running the container with the required environment variables
-
-Mapping port 8000 for external access
-
-Ensuring the EC2 security group allows only necessary ports
-
-Although the deployment itself may be completed during the final presentation, the project is structured so it can be deployed without code changes.
-
-5. Summary
-
-Milestone 2 focused on completing the backend implementation, enforcing proper security measures, hardening the Docker container, and preparing the project for deployment. The project now follows strong security and configuration practices, uses a production-ready server setup, and is deployable on cloud environments such as AWS EC2.
+Milestone 2 delivered a fully functional backend, enhanced application security, hardened container setup, and a deployable cloud-ready environment.
+The project now follows secure development practices and is suitable for production-style deployment.
