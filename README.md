@@ -106,13 +106,12 @@ E --> F[Save Workout]
 ```mermaid
 flowchart LR
 User --> Browser
-Browser --> WebApp[Django App (Views + REST API)]
+Browser --> WebApp["Django App (Views + REST API)"]
 WebApp --> DB[(Postgres or SQLite)]
 WebApp --> Media[(Local Storage)]
 WebApp --> Services[Business Logic]
 Services --> Models[Django Models]
 ```
-
 ---
 
 ## API Overview (v1)
